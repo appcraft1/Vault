@@ -1,22 +1,7 @@
 # ==============================================================================
 # APP CRAFT - GITIGNORE
-# Mengabaikan seluruh file dan folder gambar agar tidak ter-push ke GitHub
+# Mengizinkan seluruh aset foto & folder media agar aktif di GitHub Pages
 # ==============================================================================
-
-# Folder Gambar / Media Aset
-UI UX Mobile App/
-UI UX Web Dashboard/
-Wireframes and Components/
-Poster and Typography/
-Anime and Game Art/
-Wallpapers and Photography/
-
-# Format File Gambar
-*.jpg
-*.jpeg
-*.png
-*.gif
-*.webp
 
 # Skrip Helper Lokal & Temporary
 *.bat
@@ -26,3 +11,5 @@ rename_mismatched.py
 PANDUAN.txt
 .vscode/
 .idea/
+Thumbs.db
+desktop.ini
