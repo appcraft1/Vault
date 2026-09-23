@@ -1823,6 +1823,53 @@
       gap: 6px;
       margin-top: 2px;
     }
+    .studio-title-suggestions {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .title-chip-hint {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      letter-spacing: 0.04em;
+    }
+    .title-chips-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .title-chip-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #cbd5e1;
+      border-radius: 9999px;
+      padding: 4px 11px;
+      font-size: 0.72rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      user-select: none;
+    }
+    .title-chip-btn:hover {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: rgba(56, 189, 248, 0.4);
+      color: #38bdf8;
+      transform: translateY(-1px);
+    }
+    .title-chip-btn.active {
+      background: rgba(56, 189, 248, 0.25);
+      border-color: #38bdf8;
+      color: #ffffff;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+    }
 
     /* Bento Category Grid */
     .bento-category-grid {
@@ -2735,6 +2782,14 @@
               <span style="color:#64748b;">Slug Target:</span>
               <span id="studioSlugPreview" style="color:#38bdf8; font-family:monospace;">App New Design.png</span>
             </div>
+
+            <!-- Quick Title Suggestions Chips Container -->
+            <div class="studio-title-suggestions" id="titleSuggestionsWrap" style="display:none;">
+              <div class="title-chip-hint">
+                <span>💡</span> <span>PILIHAN JUDUL AI CEPAT (KLIK UNTUK PAKAI):</span>
+              </div>
+              <div class="title-chips-list" id="titleChipsList"></div>
+            </div>
           </div>
 
           <!-- 2. Interactive Bento Category Selector (Eliminating the boring select dropdown!) -->
@@ -2751,7 +2806,7 @@
             <div class="bento-category-grid" id="bentoCategoryGrid">
               
               <!-- 1. Mobile -->
-              <div class="bento-cat-tile active" data-cat="mobile" onclick="selectBentoCategory('mobile')" style="--cat-accent:#38bdf8;">
+              <div class="bento-cat-tile active" data-cat="mobile" onclick="selectBentoCategory('mobile', true)" style="--cat-accent:#38bdf8;">
                 <div class="bento-tile-top">
                   <span class="bento-tile-icon">📱</span>
                   <span class="bento-tile-pill">Portrait Flow</span>
@@ -2761,7 +2816,7 @@
               </div>
 
               <!-- 2. Web Dashboard -->
-              <div class="bento-cat-tile" data-cat="web" onclick="selectBentoCategory('web')" style="--cat-accent:#6366f1;">
+              <div class="bento-cat-tile" data-cat="web" onclick="selectBentoCategory('web', true)" style="--cat-accent:#6366f1;">
                 <div class="bento-tile-top">
                   <span class="bento-tile-icon">💻</span>
                   <span class="bento-tile-pill">Landscape SaaS</span>
@@ -2771,7 +2826,7 @@
               </div>
 
               <!-- 3. Wireframes & Components -->
-              <div class="bento-cat-tile" data-cat="wire" onclick="selectBentoCategory('wire')" style="--cat-accent:#10b981;">
+              <div class="bento-cat-tile" data-cat="wire" onclick="selectBentoCategory('wire', true)" style="--cat-accent:#10b981;">
                 <div class="bento-tile-top">
                   <span class="bento-tile-icon">📐</span>
                   <span class="bento-tile-pill">Bento & Kits</span>
@@ -2781,7 +2836,7 @@
               </div>
 
               <!-- 4. Poster & Typography -->
-              <div class="bento-cat-tile" data-cat="poster" onclick="selectBentoCategory('poster')" style="--cat-accent:#f43f5e;">
+              <div class="bento-cat-tile" data-cat="poster" onclick="selectBentoCategory('poster', true)" style="--cat-accent:#f43f5e;">
                 <div class="bento-tile-top">
                   <span class="bento-tile-icon">🎨</span>
                   <span class="bento-tile-pill">Editorial Typo</span>
@@ -2791,7 +2846,7 @@
               </div>
 
               <!-- 5. Anime & Game Art -->
-              <div class="bento-cat-tile" data-cat="anime" onclick="selectBentoCategory('anime')" style="--cat-accent:#f59e0b;">
+              <div class="bento-cat-tile" data-cat="anime" onclick="selectBentoCategory('anime', true)" style="--cat-accent:#f59e0b;">
                 <div class="bento-tile-top">
                   <span class="bento-tile-icon">🎮</span>
                   <span class="bento-tile-pill">Character Art</span>
@@ -2801,7 +2856,7 @@
               </div>
 
               <!-- 6. Wallpapers & Photography -->
-              <div class="bento-cat-tile" data-cat="wall" onclick="selectBentoCategory('wall')" style="--cat-accent:#a855f7;">
+              <div class="bento-cat-tile" data-cat="wall" onclick="selectBentoCategory('wall', true)" style="--cat-accent:#a855f7;">
                 <div class="bento-tile-top">
                   <span class="bento-tile-icon">🌄</span>
                   <span class="bento-tile-pill">Scenery 4K</span>
@@ -5380,27 +5435,407 @@
       });
     }
 
+    // ==========================================================================
+    // ADVANCED AI VISION ENGINE, DUMP SANITIZER & MULTI-FACTOR CLASSIFIER
+    // ==========================================================================
+    let lastDetectedFeatures = null;
+
+    // Check if filename is a raw camera, WhatsApp, screenshot, or timestamp dump
+    function isCameraOrAppDumpFilename(name) {
+      const withoutExt = name.replace(/\.[^/.]+$/, '').trim();
+      
+      // WhatsApp in English & Indonesian locales
+      if (/whatsapp|wa[-_]?\d+/i.test(withoutExt)) return true;
+      if (/gambar\s+whats\s*app/i.test(withoutExt)) return true;
+      
+      // Screenshots & Screen captures
+      if (/screenshot|screen[-_]?shot|tangkapan[-_]?layar|snip|capture|cuplikan/i.test(withoutExt)) return true;
+      
+      // Camera exports: IMG_..., DSC_..., PXL_..., Photo_..., Foto_...
+      if (/^(img|dsc|pxl|photo|foto|pic|picture|dcim)[-_]?\d+/i.test(withoutExt)) return true;
+      
+      // Timestamps & Indonesian time words ("pukul 20.34.39", "jam 15.00")
+      if (/(pukul|jam|at)[-_\s]+\d{1,2}[.:]\d{1,2}/i.test(withoutExt)) return true;
+      
+      // Hexadecimal hashes or pure numbers/dates
+      if (/^[0-9a-f]{8,}$/i.test(withoutExt)) return true;
+      if (/^[\d\s._:-]+$/.test(withoutExt)) return true;
+      
+      return false;
+    }
+
+    // Extract clean human-readable name if the filename contains meaningful words
+    function extractCleanName(rawName) {
+      let name = rawName.replace(/\.[^/.]+$/, ''); // remove ext
+      
+      // Strip WhatsApp, camera, screenshot, and time artifacts
+      name = name.replace(/gambar\s+whats\s*app/gi, '');
+      name = name.replace(/whats\s*app\s+image/gi, '');
+      name = name.replace(/whats\s*app/gi, '');
+      name = name.replace(/tangkapan\s+layar/gi, '');
+      name = name.replace(/screen\s*shot/gi, '');
+      name = name.replace(/pukul\s+\d{1,2}[.:]\d{1,2}([.:]\d{1,2})?/gi, '');
+      name = name.replace(/jam\s+\d{1,2}[.:]\d{1,2}([.:]\d{1,2})?/gi, '');
+      name = name.replace(/at\s+\d{1,2}[.:]\d{1,2}([.:]\d{1,2})?/gi, '');
+      name = name.replace(/\b\d{4}[-_.]?\d{2}[-_.]?\d{2}\b/g, ''); // dates
+      name = name.replace(/\b\d{2}[.:]\d{2}[.:]\d{2}\b/g, ''); // times
+      name = name.replace(/\b[0-9a-f]{6,}\b/gi, ''); // hashes like 7cf9d8bd
+      name = name.replace(/^(img|dsc|pxl|capture|photo|foto|pic|image)[_-]?\d*/gi, '');
+      name = name.replace(/[_-]+/g, ' ');
+      name = name.replace(/([a-z])([A-Z])/g, '$1 $2');
+      name = name.replace(/[^\w\s]/g, ' ');
+      name = name.replace(/\s+/g, ' ').trim();
+      
+      if (!name || name.length < 3 || /^[\d\s]+$/.test(name)) {
+        return null; // Empty or junk dump
+      }
+      
+      return name.split(' ')
+        .filter(Boolean)
+        .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+        .join(' ');
+    }
+
+    // Client-side Offscreen Canvas Computer Vision Analyzer
+    function analyzeCanvasVisualFeatures(img) {
+      const w = img.naturalWidth || 800;
+      const h = img.naturalHeight || 600;
+      const ratio = w / h;
+      
+      let features = {
+        w,
+        h,
+        ratio,
+        isExtremePortrait: ratio <= 0.68, // 9:16 smartphone
+        isStandardPortrait: ratio > 0.68 && ratio < 0.92, // 3:4, A4, poster
+        isSquare: ratio >= 0.92 && ratio <= 1.15, // 1:1, bento card, component
+        isLandscape: ratio > 1.15 && ratio < 1.85, // 16:9, 16:10, 4:3
+        isUltraWide: ratio >= 1.85, // widescreen desktop
+        
+        avgSaturation: 0,
+        avgBrightness: 0,
+        vibrantPixelPct: 0,
+        grayscalePixelPct: 0,
+        skinTonePixelPct: 0,
+        highContrastEdgePct: 0
+      };
+
+      try {
+        const cvSize = 96;
+        const canvas = document.createElement('canvas');
+        canvas.width = cvSize;
+        canvas.height = cvSize;
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        ctx.drawImage(img, 0, 0, cvSize, cvSize);
+        const data = ctx.getImageData(0, 0, cvSize, cvSize).data;
+        
+        let totalSat = 0;
+        let totalBri = 0;
+        let vibrantCount = 0;
+        let grayscaleCount = 0;
+        let skinCount = 0;
+        let edgeCount = 0;
+        const totalPixels = cvSize * cvSize;
+
+        const lum = new Float32Array(totalPixels);
+
+        for (let i = 0; i < totalPixels; i++) {
+          const idx = i * 4;
+          const r = data[idx];
+          const g = data[idx + 1];
+          const b = data[idx + 2];
+
+          const l = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+          lum[i] = l;
+          totalBri += l;
+
+          const max = Math.max(r, g, b) / 255;
+          const min = Math.min(r, g, b) / 255;
+          const d = max - min;
+          let sat = max === 0 ? 0 : d / max;
+          totalSat += sat;
+
+          if (sat > 0.45) vibrantCount++;
+          if (sat < 0.12) grayscaleCount++;
+
+          // Human skin tone heuristic: R > G > B, R-G > 12, Sat 0.15-0.72, Max > 0.32
+          if (r > g && g > b && (r - g) > 12 && sat > 0.15 && sat < 0.72 && max > 0.32) {
+            skinCount++;
+          }
+        }
+
+        // Sobel edge gradient computation
+        for (let y = 1; y < cvSize - 1; y++) {
+          for (let x = 1; x < cvSize - 1; x++) {
+            const idx = y * cvSize + x;
+            const gx = (lum[idx + 1] - lum[idx - 1]);
+            const gy = (lum[idx + cvSize] - lum[idx - cvSize]);
+            const grad = Math.abs(gx) + Math.abs(gy);
+            if (grad > 0.35) {
+              edgeCount++;
+            }
+          }
+        }
+
+        features.avgBrightness = totalBri / totalPixels;
+        features.avgSaturation = totalSat / totalPixels;
+        features.vibrantPixelPct = vibrantCount / totalPixels;
+        features.grayscalePixelPct = grayscaleCount / totalPixels;
+        features.skinTonePixelPct = skinCount / totalPixels;
+        features.highContrastEdgePct = edgeCount / totalPixels;
+      } catch (err) {
+        console.warn('Canvas vision fallback:', err);
+      }
+
+      return features;
+    }
+
+    // Multi-Factor Classifier (Keywords + Vision Canvas + Aspect Ratio)
+    function classifyImageWithVision(features, rawName, extractedName) {
+      let scores = {
+        mobile: 0,
+        web: 0,
+        wire: 0,
+        poster: 0,
+        anime: 0,
+        wall: 0
+      };
+      
+      let reasons = {
+        mobile: [],
+        web: [],
+        wire: [],
+        poster: [],
+        anime: [],
+        wall: []
+      };
+
+      // Factor 1: Keywords in clean extracted name (with strict word boundaries)
+      const textToCheck = (extractedName || '').toLowerCase();
+      
+      if (/\b(mobile|phone|ios|android|smartphone|onboarding|tabbar|checkout|feed|splash|reels|story|screen)\b/.test(textToCheck)) {
+        scores.mobile += 80;
+        reasons.mobile.push('Kata kunci mobile di nama file');
+      }
+      if (/\b(web|dashboard|desktop|crm|saas|analytics|admin|portal|landing|hero|widescreen)\b/.test(textToCheck)) {
+        scores.web += 80;
+        reasons.web.push('Kata kunci web dashboard di nama file');
+      }
+      if (/\b(wireframe|wire|component|bento|ui kit|kit|flowchart|blueprint|sketch|system)\b/.test(textToCheck)) {
+        scores.wire += 80;
+        reasons.wire.push('Kata kunci wireframe di nama file');
+      }
+      if (/\b(poster|typo|typography|font|editorial|flyer|swiss|magazine|layout|text|letter|kanji)\b/.test(textToCheck)) {
+        scores.poster += 80;
+        reasons.poster.push('Kata kunci poster/tipografi di nama file');
+      }
+      if (/\b(anime|manga|game|character|waifu|illustration|comic|pixel|render|vtuber|genshin|art)\b/.test(textToCheck)) {
+        scores.anime += 80;
+        reasons.anime.push('Kata kunci anime/karakter di nama file');
+      }
+      if (/\b(wallpaper|photo|photography|nature|landscape|scenery|portrait|camera|street|sunset)\b/.test(textToCheck)) {
+        scores.wall += 80;
+        reasons.wall.push('Kata kunci wallpaper/fotografi di nama file');
+      }
+
+      // Factor 2: Aspect Ratio
+      if (features.isExtremePortrait) {
+        scores.mobile += 55;
+        reasons.mobile.push(`Aspek rasio portrait smartphone (1:${(1/features.ratio).toFixed(1)})`);
+      } else if (features.isStandardPortrait) {
+        scores.poster += 40;
+        scores.wall += 20;
+        reasons.poster.push(`Aspek rasio poster editorial (${features.ratio.toFixed(2)}:1)`);
+      } else if (features.isSquare) {
+        scores.wire += 35;
+        scores.poster += 25;
+        reasons.wire.push('Aspek rasio bento modular (1:1)');
+      } else if (features.isLandscape) {
+        if (features.skinTonePixelPct > 0.05 && features.highContrastEdgePct > 0.02) {
+          scores.poster += 40;
+          scores.wall += 25;
+          reasons.poster.push('Komposisi fotografi editorial & tipografi grafis');
+        } else if (features.grayscalePixelPct > 0.4 && features.highContrastEdgePct > 0.04) {
+          scores.web += 40;
+          scores.wire += 30;
+          reasons.web.push('Struktur antarmuka desktop layar lebar');
+        } else {
+          scores.web += 30;
+          scores.wall += 25;
+          reasons.web.push('Aspek rasio landscape layar lebar');
+        }
+      } else if (features.isUltraWide) {
+        scores.web += 50;
+        scores.wall += 30;
+        reasons.web.push('Aspek rasio ultrawide desktop');
+      }
+
+      // Factor 3: Color & Visual Distribution
+      if (features.vibrantPixelPct > 0.35 && features.avgSaturation > 0.40) {
+        scores.anime += 40;
+        reasons.anime.push('Palet warna cerah & saturasi tinggi khas artwork');
+      }
+      if (features.grayscalePixelPct > 0.50 && features.avgSaturation < 0.20) {
+        scores.wire += 45;
+        reasons.wire.push('Palet monokromatik kontras tinggi khas wireframe');
+      }
+      if (features.skinTonePixelPct > 0.05) {
+        if (features.highContrastEdgePct > 0.02 || features.isStandardPortrait || features.isLandscape) {
+          scores.poster += 35;
+          reasons.poster.push('Kombinasi potret studio dengan elemen tipografi');
+        } else {
+          scores.wall += 30;
+          reasons.wall.push('Karakteristik fotografi potret manusia alami');
+        }
+      }
+
+      let topCat = 'poster';
+      let maxScore = -1;
+      for (const cat in scores) {
+        if (scores[cat] > maxScore) {
+          maxScore = scores[cat];
+          topCat = cat;
+        }
+      }
+
+      const reasonText = (reasons[topCat] && reasons[topCat][0]) || 'Analisis visual kanvas';
+      return { category: topCat, score: maxScore, reason: reasonText };
+    }
+
+    // Smart Title and Suggestion Generator
+    function generateSmartTitles(cat, features, rawName, extractedName) {
+      let primaryTitle = '';
+      let suggestions = [];
+      
+      if (extractedName) {
+        primaryTitle = extractedName;
+        suggestions = [
+          extractedName,
+          `${categoriesMeta[cat]?.label.split(' ')[0] || 'Modern'} ${extractedName}`,
+          `${extractedName} Design Layout`,
+          `${extractedName} Concept Art`
+        ];
+      } else {
+        if (cat === 'poster') {
+          if (features.skinTonePixelPct > 0.04) {
+            primaryTitle = 'Editorial Graphic & Typography Poster';
+            suggestions = [
+              'Editorial Graphic & Typography Poster',
+              'Japanese Visual Typography Layout',
+              'Creative Studio Portrait & Typo Art',
+              'Modern Magazine Editorial Concept'
+            ];
+          } else {
+            primaryTitle = 'Modern Graphic Typography Poster';
+            suggestions = [
+              'Modern Graphic Typography Poster',
+              'Swiss Minimalist Editorial Poster',
+              'Creative Brand Typography Layout',
+              'Abstract Visual Graphic Design'
+            ];
+          }
+        } else if (cat === 'mobile') {
+          primaryTitle = 'Mobile App Onboarding & Flow UI';
+          suggestions = [
+            'Mobile App Onboarding & Flow UI',
+            'Fintech Smartphone Interface Concept',
+            'Clean iOS & Android Mobile Screen',
+            'Modern Mobile UX Exploration'
+          ];
+        } else if (cat === 'web') {
+          primaryTitle = 'SaaS Management Web Dashboard';
+          suggestions = [
+            'SaaS Management Web Dashboard',
+            'Cloud Analytics Portal Desktop UI',
+            'Modern Web Application Platform',
+            'Executive Metrics Dashboard Layout'
+          ];
+        } else if (cat === 'wire') {
+          primaryTitle = 'Wireframe Design System & Bento Kit';
+          suggestions = [
+            'Wireframe Design System & Bento Kit',
+            'Modular Card Styles UI Library',
+            'App Structure & Blueprint Wireframe',
+            'Component Architecture Design Kit'
+          ];
+        } else if (cat === 'anime') {
+          primaryTitle = 'Digital Character Concept Art';
+          suggestions = [
+            'Digital Character Concept Art',
+            'Dynamic Game Splash Illustration',
+            'Creative Anime Artwork & Visual',
+            'Cyberpunk Character Visual Concept'
+          ];
+        } else {
+          primaryTitle = 'Aesthetic Photography & Scenery';
+          suggestions = [
+            'Aesthetic Photography & Scenery',
+            'High-Resolution Studio Visual',
+            'Cinematic Atmospheric Wallpaper',
+            'Minimalist Aesthetic Photography'
+          ];
+        }
+      }
+
+      return { primaryTitle, suggestions };
+    }
+
+    // Render 1-Click Interactive Title Suggestion Chips
+    function renderTitleSuggestions(cat, features, rawName, extractedName) {
+      const wrap = document.getElementById('titleSuggestionsWrap');
+      const list = document.getElementById('titleChipsList');
+      if (!wrap || !list) return;
+
+      const { suggestions } = generateSmartTitles(cat, features, rawName, extractedName);
+      list.innerHTML = '';
+      
+      const currentVal = (document.getElementById('uploadTitle')?.value || '').trim();
+
+      suggestions.forEach(titleText => {
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = `title-chip-btn ${titleText === currentVal ? 'active' : ''}`;
+        chip.innerHTML = `<span>✨</span><span>${escapeHtml(titleText)}</span>`;
+        chip.onclick = () => applyTitleSuggestion(titleText, chip);
+        list.appendChild(chip);
+      });
+
+      wrap.style.display = 'flex';
+    }
+
+    // Apply Selected Title Chip
+    function applyTitleSuggestion(titleText, chipElement) {
+      const titleInput = document.getElementById('uploadTitle');
+      if (titleInput) {
+        titleInput.value = titleText;
+        onTitleInputChange(titleText);
+      }
+      document.querySelectorAll('.title-chip-btn').forEach(btn => btn.classList.remove('active'));
+      if (chipElement) chipElement.classList.add('active');
+      showToast(`✓ Judul diterapkan: "${titleText}"`);
+    }
+
     // Dynamic Contextual Indonesian Description Generator
     function generateContextualDescription(cat, title, w = 1080, h = 1920) {
       const ratio = w / h;
       const ratioStr = ratio < 1 ? `1:${(1/ratio).toFixed(1)} Portrait` : `${ratio.toFixed(1)}:1 Landscape`;
-      if (cat === 'mobile') {
-        return `Desain antarmuka aplikasi seluler bertema ${title}. Format portrait (${ratioStr}), cocok untuk eksplorasi flow antarmuka dan interaksi smartphone.`;
+      if (cat === 'poster') {
+        return `Karya poster editorial dan tipografi modern bertema "${title}". Memadukan estetika visual fotografi dengan tata letak tipografi grafis berhirarki kuat. Cocok untuk referensi editorial branding dan poster modern.`;
+      } else if (cat === 'mobile') {
+        return `Desain antarmuka aplikasi seluler bertema "${title}". Format smartphone (${ratioStr}), berfokus pada alur pengguna yang intuitif, hierarki interaksi bersih, dan komponen mobile modern.`;
       } else if (cat === 'web') {
-        return `Eksplorasi antarmuka web dashboard bertema ${title}. Format layar lebar (${ratioStr}), menampilkan komposisi modular dan visual desktop yang komprehensif.`;
+        return `Eksplorasi antarmuka web dashboard bertema "${title}". Format layar lebar (${ratioStr}), menampilkan komposisi modular, tata letak data analitik, dan visual desktop yang terstruktur.`;
       } else if (cat === 'wire') {
-        return `Rancangan struktur komponen dan wireframe bertema ${title}. Terstruktur sebagai referensi layout bento dan panduan design system.`;
-      } else if (cat === 'poster') {
-        return `Karya grafis dan tipografi artistik bertema ${title}. Menonjolkan estetika hierarki teks editorial dan tata letak visual modern.`;
+        return `Rancangan struktur komponen dan wireframe bertema "${title}". Terstruktur sebagai blueprint desain, panduan tata letak bento, dan referensi sistem komponen UI kit.`;
       } else if (cat === 'anime') {
-        return `Artwork ilustrasi dan desain karakter bertema ${title}. Visual dinamis untuk inspirasi game concept art dan aset kreatif.`;
+        return `Artwork ilustrasi dan desain karakter digital bertema "${title}". Visual dinamis dengan pencahayaan ekspresif untuk inspirasi game concept art dan aset kreatif visual.`;
       } else {
-        return `Koleksi wallpaper dan fotografi bertema ${title}. Referensi atmosfer pencahayaan dan estetika visual resolusi tinggi.`;
+        return `Koleksi fotografi dan wallpaper estetis bertema "${title}". Menampilkan atmosfer pencahayaan studio resolusi tinggi (${ratioStr}) untuk inspirasi mood visual.`;
       }
     }
 
     // Interactive Bento Category Selector
-    function selectBentoCategory(cat) {
+    function selectBentoCategory(cat, isUserManualClick = false) {
       const hiddenInput = document.getElementById('uploadCategory');
       if (hiddenInput) hiddenInput.value = cat;
 
@@ -5431,7 +5866,15 @@
       const descInput = document.getElementById('uploadDesc');
       const currentTitle = (titleInput?.value.trim()) || 'Desain Baru';
       if (descInput) {
-        descInput.value = generateContextualDescription(cat, currentTitle);
+        descInput.value = generateContextualDescription(cat, currentTitle, lastDetectedFeatures?.w || 1080, lastDetectedFeatures?.h || 1920);
+      }
+
+      // If user clicked category manually, update title suggestions for that category
+      if (isUserManualClick && lastDetectedFeatures) {
+        const isDump = isCameraOrAppDumpFilename(currentUploadFileName);
+        const extracted = extractCleanName(currentUploadFileName);
+        renderTitleSuggestions(cat, lastDetectedFeatures, currentUploadFileName, isDump ? null : extracted);
+        showToast(`📁 Kategori diubah ke: ${catMeta.label}`);
       }
     }
 
@@ -5449,6 +5892,12 @@
       if (mockupTitle) mockupTitle.textContent = cleanVal || 'Nama Desain';
       if (slugPreview) slugPreview.textContent = targetSlug;
       if (treeTargetFile) treeTargetFile.textContent = targetSlug;
+
+      const catInput = document.getElementById('uploadCategory');
+      const descInput = document.getElementById('uploadDesc');
+      if (descInput && catInput) {
+        descInput.value = generateContextualDescription(catInput.value, cleanVal || 'Desain Baru', lastDetectedFeatures?.w || 1080, lastDetectedFeatures?.h || 1920);
+      }
     }
 
     function handleFileSelected(file) {
@@ -5494,8 +5943,8 @@
           // Extract dynamic 5-color palette strip
           extractStudioPalette(img);
 
-          // Run AI Auto-Detection for Title, Category, and Description
-          analyzeUploadedImage(file, w, h);
+          // Run AI Vision Auto-Detection for Title, Category, and Description
+          analyzeUploadedImage(file, img);
         };
         img.src = currentUploadDataUrl;
       };
@@ -5503,76 +5952,49 @@
     }
 
     // AI Smart Auto-Classifier: Title, Category, Folder, and Contextual Indonesian Description
-    function analyzeUploadedImage(file, w, h) {
-      const ratio = w / h;
-      const rawName = file.name;
-      const lowerName = rawName.toLowerCase();
+    function analyzeUploadedImage(file, img) {
+      const features = analyzeCanvasVisualFeatures(img);
+      lastDetectedFeatures = features;
+      
+      const isDump = isCameraOrAppDumpFilename(file.name);
+      const extractedName = extractCleanName(file.name);
+      
+      // Classify category using multi-factor vision engine
+      const classification = classifyImageWithVision(features, file.name, isDump ? null : extractedName);
+      const detectedCat = classification.category;
+      
+      // Generate clean title & suggestions
+      const titleData = generateSmartTitles(detectedCat, features, file.name, isDump ? null : extractedName);
+      const cleanTitle = titleData.primaryTitle;
 
-      // 1. AUTO-DETECT CATEGORY
-      let detectedCat = 'mobile';
-      if (/mobile|app|ios|android|phone|smartphone|chat|feed|onboarding|splash|checkout|banking|wallet|fintech|reels|story|screen/.test(lowerName)) {
-        detectedCat = 'mobile';
-      } else if (/web|dashboard|desktop|admin|crm|analytics|saas|landing|portal|table|widescreen|browser|header|hero/.test(lowerName)) {
-        detectedCat = 'web';
-      } else if (/wireframe|wire|component|bento|system|ui kit|kit|flowchart|diagram|sketch|mockup|grid|layout/.test(lowerName)) {
-        detectedCat = 'wire';
-      } else if (/poster|typo|typography|font|letter|flyer|cover|editorial|magazine|branding|logotype|banner/.test(lowerName)) {
-        detectedCat = 'poster';
-      } else if (/anime|game|character|manga|art|comic|pixel|3d|render|fantasy|waifu|illustration|hero|rpg/.test(lowerName)) {
-        detectedCat = 'anime';
-      } else if (/wallpaper|photo|nature|landscape|scenery|portrait|camera|street|sunset|mountain|view|beach/.test(lowerName)) {
-        detectedCat = 'wall';
-      } else {
-        // Fallback by Aspect Ratio
-        if (ratio <= 0.78) {
-          detectedCat = 'mobile';
-        } else if (ratio >= 1.25) {
-          detectedCat = 'web';
-        } else if (ratio >= 0.90 && ratio <= 1.10) {
-          detectedCat = 'wire';
-        } else if (ratio < 1.0) {
-          detectedCat = 'poster';
-        } else {
-          detectedCat = 'wall';
-        }
-      }
-
-      // 2. AUTO-DETECT TITLE (NAMA / JUDUL)
-      let baseName = rawName.replace(/\.[^/.]+$/, ''); // remove ext
-      baseName = baseName.replace(/^(IMG|Screenshot|PXL|Capture|Photo|WP|Download|Pic|Image)[_-]?/i, '');
-      baseName = baseName.replace(/\b\d{4}[-_]?\d{2}[-_]?\d*\b/g, '');
-      baseName = baseName.replace(/[_-]+/g, ' ');
-      baseName = baseName.replace(/([a-z])([A-Z])/g, '$1 $2');
-      baseName = baseName.trim();
-
-      let cleanTitle = '';
-      if (!baseName || /^\d+$/.test(baseName)) {
-        const catMeta = categoriesMeta[detectedCat] || categoriesMeta.mobile;
-        const suffix = baseName ? '#' + baseName.slice(-4) : '#' + Math.floor(1000 + Math.random() * 9000);
-        cleanTitle = `${catMeta.label.split(' ')[0]} Interface ${suffix}`;
-      } else {
-        cleanTitle = baseName.split(' ')
-          .filter(Boolean)
-          .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
-          .join(' ');
-      }
-
-      // 3. UPDATE FORM & BENTO TILES
+      // Update Form & Bento Tiles
       const titleInput = document.getElementById('uploadTitle');
       const descInput = document.getElementById('uploadDesc');
+      const titleAutoTag = document.getElementById('titleAutoTag');
+      const catAutoTag = document.getElementById('catAutoTag');
 
       if (titleInput) titleInput.value = cleanTitle;
       onTitleInputChange(cleanTitle);
+
+      if (titleAutoTag) {
+        titleAutoTag.textContent = isDump ? '✨ AI Smart Generated' : '✨ AI Auto-Cleaned';
+      }
+      if (catAutoTag) {
+        catAutoTag.textContent = `✨ ${classification.reason}`;
+      }
 
       // Select Bento Category (also updates badges, mockup, folder, and description)
       selectBentoCategory(detectedCat);
 
       if (descInput) {
-        descInput.value = generateContextualDescription(detectedCat, cleanTitle, w, h);
+        descInput.value = generateContextualDescription(detectedCat, cleanTitle, features.w, features.h);
       }
 
+      // Render 1-Click Title Suggestion Chips
+      renderTitleSuggestions(detectedCat, features, file.name, isDump ? null : extractedName);
+
       const catMeta = categoriesMeta[detectedCat] || categoriesMeta.mobile;
-      showToast(`✨ AI mendeteksi kategori: ${catMeta.label}`);
+      showToast(`✨ AI Vision: Terdeteksi ${catMeta.label} (${classification.reason})`);
     }
 
     function copyFolderDestinationPath() {
@@ -5619,6 +6041,7 @@
     function resetUploadForm() {
       currentUploadDataUrl = '';
       currentUploadFileName = '';
+      lastDetectedFeatures = null;
       const preview = document.getElementById('uploadPreviewImg');
       const previewContainer = document.getElementById('dropPreviewContainer');
       const dropContent = document.getElementById('dropZoneContent');
@@ -5632,6 +6055,10 @@
       const slugPreview = document.getElementById('studioSlugPreview');
       const treeTargetFile = document.getElementById('treeTargetFile');
       const paletteContainer = document.getElementById('studioPaletteSwatches');
+      const suggestionsWrap = document.getElementById('titleSuggestionsWrap');
+      const titleChipsList = document.getElementById('titleChipsList');
+      const titleAutoTag = document.getElementById('titleAutoTag');
+      const catAutoTag = document.getElementById('catAutoTag');
 
       if (preview) { preview.src = ''; }
       if (previewContainer) previewContainer.style.display = 'none';
@@ -5645,6 +6072,11 @@
       if (mockupTitle) mockupTitle.textContent = 'Nama Desain';
       if (slugPreview) slugPreview.textContent = 'App New Design.png';
       if (treeTargetFile) treeTargetFile.textContent = 'Aset Desain Baru.png';
+      if (suggestionsWrap) suggestionsWrap.style.display = 'none';
+      if (titleChipsList) titleChipsList.innerHTML = '';
+      if (titleAutoTag) titleAutoTag.textContent = '✨ AI Auto-Cleaned';
+      if (catAutoTag) catAutoTag.textContent = '✨ AI Auto-Classified';
+
       if (paletteContainer) {
         paletteContainer.innerHTML = `
           <div class="palette-swatch-empty" style="background:#1e293b;"></div>
