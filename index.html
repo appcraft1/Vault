@@ -1416,64 +1416,72 @@
     /* ==========================================================================
        UPLOAD MODAL (INDEXEDDB MULTI-DEVICE PERSISTENT STORAGE & AI AUTO-DETECT)
        ========================================================================== */
+    /* ==========================================================================
+       BENTO STUDIO UPLOAD MODAL (AI VISION AUTO-DETECT & INDEXEDDB ENGINE)
+       ========================================================================== */
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(4, 7, 14, 0.88);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      background: rgba(3, 7, 18, 0.88);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
       z-index: 1500;
       display: none;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 24px;
       animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .modal-backdrop.active {
       display: flex;
     }
-    .upload-modal-box {
-      background: linear-gradient(165deg, rgba(17, 24, 39, 0.98) 0%, rgba(10, 14, 26, 0.99) 100%);
+    .upload-modal-box.studio-modal-box {
+      background: linear-gradient(165deg, rgba(15, 23, 42, 0.98) 0%, rgba(9, 14, 26, 0.99) 100%);
       border: 1px solid rgba(56, 189, 248, 0.25);
-      border-radius: 22px;
+      border-radius: 24px;
       width: 100%;
-      max-width: 580px;
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(56, 189, 248, 0.1);
+      max-width: 960px;
+      box-shadow: 0 32px 80px rgba(0, 0, 0, 0.95), 0 0 45px rgba(56, 189, 248, 0.12);
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      animation: modalSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      animation: modalSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1);
     }
     @keyframes modalSlideUp {
-      from { opacity: 0; transform: translateY(16px) scale(0.97); }
+      from { opacity: 0; transform: translateY(20px) scale(0.97); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
-    .modal-header {
-      padding: 18px 24px;
+    .studio-header {
+      padding: 20px 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       background: rgba(255, 255, 255, 0.02);
     }
-    .modal-title {
-      font-size: 1.05rem;
+    .studio-main-title {
+      font-size: 1.12rem;
       font-weight: 700;
       color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      letter-spacing: -0.01em;
     }
-    .modal-title-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(99, 102, 241, 0.2));
-      border: 1px solid rgba(56, 189, 248, 0.3);
+    .studio-subtitle {
+      font-size: 0.76rem;
+      color: #94a3b8;
+      font-weight: normal;
+      margin-top: 3px;
+    }
+    .studio-icon-pulse {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(99, 102, 241, 0.25));
+      border: 1px solid rgba(56, 189, 248, 0.35);
       display: flex;
       align-items: center;
       justify-content: center;
       color: #38bdf8;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.2);
     }
     .ai-detect-badge {
       display: inline-flex;
@@ -1481,7 +1489,7 @@
       gap: 6px;
       font-size: 0.72rem;
       font-weight: 700;
-      padding: 3px 9px;
+      padding: 3px 10px;
       border-radius: 999px;
       background: rgba(56, 189, 248, 0.12);
       border: 1px solid rgba(56, 189, 248, 0.35);
@@ -1501,8 +1509,8 @@
       50% { opacity: 0.4; transform: scale(0.85); }
     }
     .modal-close-btn {
-      width: 34px;
-      height: 34px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.06);
       border: 1px solid rgba(255, 255, 255, 0.12);
@@ -1511,233 +1519,381 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: all 0.18s ease;
     }
     .modal-close-btn:hover {
       background: #fff;
       color: #000;
-      transform: scale(1.05);
+      transform: scale(1.06);
     }
-    .modal-body {
-      padding: 22px 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      max-height: 75vh;
+
+    /* Studio 2-Column Body Layout */
+    .studio-body-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.25fr;
+      gap: 26px;
+      padding: 24px 28px;
+      max-height: calc(85vh - 140px);
       overflow-y: auto;
       scrollbar-width: thin;
       scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
     }
-    .modal-body::-webkit-scrollbar {
+    .studio-body-grid::-webkit-scrollbar {
       width: 6px;
     }
-    .modal-body::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.02);
-      border-radius: 8px;
-    }
-    .modal-body::-webkit-scrollbar-thumb {
+    .studio-body-grid::-webkit-scrollbar-thumb {
       background: rgba(255, 255, 255, 0.16);
       border-radius: 8px;
     }
-    .modal-body::-webkit-scrollbar-thumb:hover {
+    .studio-body-grid::-webkit-scrollbar-thumb:hover {
       background: rgba(56, 189, 248, 0.45);
     }
 
-    /* Modern Drop Zone */
-    .drop-zone {
+    /* Left Visual Pane */
+    .studio-visual-pane {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .studio-canvas-card {
       position: relative;
       border: 2px dashed rgba(56, 189, 248, 0.3);
-      border-radius: 16px;
-      padding: 22px 18px;
-      text-align: center;
-      cursor: pointer;
-      background: rgba(56, 189, 248, 0.02);
-      transition: all 0.22s ease;
+      border-radius: 18px;
+      background: rgba(15, 23, 42, 0.6);
+      min-height: 250px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      cursor: pointer;
       overflow: hidden;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .drop-zone:hover, .drop-zone.dragover {
+    .studio-canvas-card:hover, .studio-canvas-card.dragover {
       border-color: #38bdf8;
       background: rgba(56, 189, 248, 0.08);
-      box-shadow: 0 0 24px rgba(56, 189, 248, 0.2);
-      transform: translateY(-1px);
+      box-shadow: 0 0 28px rgba(56, 189, 248, 0.22);
+      transform: translateY(-2px);
     }
-    .drop-icon-wrap {
-      width: 52px;
-      height: 52px;
-      border-radius: 14px;
-      background: rgba(56, 189, 248, 0.12);
+    .studio-drop-empty {
+      padding: 32px 20px;
+      text-align: center;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 2px;
-    }
-    .drop-preview-container {
-      display: none;
-      width: 100%;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
-    .drop-preview-img {
-      max-height: 180px;
-      max-width: 100%;
-      border-radius: 12px;
-      object-fit: contain;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    .drop-preview-meta {
+    .studio-drop-glow-ring {
+      width: 64px;
+      height: 64px;
+      border-radius: 20px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
       display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
       align-items: center;
       justify-content: center;
+      margin-bottom: 4px;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
+    }
+    .studio-drop-h1 {
+      font-weight: 700;
+      font-size: 1rem;
+      color: #f8fafc;
+    }
+    .studio-drop-sub {
+      font-size: 0.78rem;
+      color: #94a3b8;
+      max-width: 280px;
+      line-height: 1.4;
+    }
+    .studio-drop-pills {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
     }
     .spec-chip {
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       font-weight: 600;
-      padding: 4px 10px;
+      padding: 3px 9px;
       border-radius: 999px;
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #cbd5e1;
+    }
+
+    /* Live Card Mockup */
+    .studio-live-mockup-wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 14px;
+      gap: 12px;
+    }
+    .studio-live-card {
+      width: 100%;
+      max-width: 320px;
+      background: #0f172a;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
+      transition: transform 0.2s ease;
+    }
+    .studio-mockup-media {
+      position: relative;
+      width: 100%;
+      max-height: 220px;
+      background: #020617;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .studio-mockup-img {
+      max-width: 100%;
+      max-height: 220px;
+      object-fit: contain;
+      display: block;
+    }
+    .studio-mockup-footer {
+      padding: 12px 14px;
+      background: #0b101d;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .studio-mockup-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #f8fafc;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .studio-mockup-sub {
+      font-size: 0.72rem;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+    .studio-reupload-btn {
+      font-size: 0.76rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
       color: #e2e8f0;
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.18s ease;
     }
-    .spec-chip.highlight {
-      background: rgba(56, 189, 248, 0.15);
-      border-color: rgba(56, 189, 248, 0.35);
+    .studio-reupload-btn:hover {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: #38bdf8;
       color: #38bdf8;
     }
-    .drop-change-btn {
-      font-size: 0.74rem;
-      font-weight: 700;
-      padding: 4px 12px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #cbd5e1;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-    .drop-change-btn:hover {
-      background: rgba(255, 255, 255, 0.18);
-      color: #fff;
-    }
 
-    /* Form Fields */
-    .form-group {
+    /* Specs Bento Row */
+    .studio-specs-bento {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .spec-metric-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 8px 10px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      align-items: center;
+      text-align: center;
+    }
+    .metric-label {
+      font-size: 0.64rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: #64748b;
+      margin-bottom: 2px;
+    }
+    .metric-value {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #38bdf8;
+      font-family: ui-monospace, monospace;
+    }
+
+    /* Extracted Palette Strip */
+    .studio-palette-box {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .palette-box-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .palette-box-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #94a3b8;
+      letter-spacing: 0.06em;
+    }
+    .studio-palette-strip {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+    .studio-palette-strip .palette-swatch, .studio-palette-strip .palette-swatch-empty {
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .studio-palette-strip .palette-swatch:hover {
+      transform: translateY(-2px) scale(1.08);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
+      border-color: #fff;
+    }
+
+    /* Right Form Pane */
+    .studio-form-pane {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .studio-section {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .studio-label {
+      font-size: 0.73rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: #94a3b8;
+      text-transform: uppercase;
     }
     .form-label-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-    .form-label {
-      font-size: 0.74rem;
-      font-weight: 700;
-      color: #94a3b8;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
     .form-label-tag {
       font-size: 0.68rem;
       font-weight: 600;
       color: #38bdf8;
-      background: rgba(56, 189, 248, 0.1);
-      padding: 2px 7px;
-      border-radius: 4px;
-      border: 1px solid rgba(56, 189, 248, 0.2);
+      background: rgba(56, 189, 248, 0.12);
+      padding: 2px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(56, 189, 248, 0.25);
     }
-    .form-input, .form-select, .form-textarea {
+    .studio-input-wrap {
+      position: relative;
+    }
+    .studio-input {
+      width: 100%;
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 12px;
-      padding: 10px 14px;
+      padding: 11px 16px;
       color: #fff;
       font-family: inherit;
-      font-size: 0.88rem;
+      font-size: 0.92rem;
+      font-weight: 600;
       outline: none;
       transition: all 0.2s ease;
     }
-    .form-select option {
-      background: #111420;
-      color: #fff;
-    }
-    .form-input:focus, .form-select:focus, .form-textarea:focus {
+    .studio-input:focus {
       background: rgba(255, 255, 255, 0.07);
       border-color: #38bdf8;
-      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+    }
+    .studio-slug-preview {
+      font-size: 0.72rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 2px;
     }
 
-    /* Folder Destination Card */
-    .folder-destination-card {
-      background: rgba(14, 165, 233, 0.06);
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      border-radius: 14px;
-      padding: 14px 16px;
+    /* Bento Category Grid */
+    .bento-category-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    .bento-cat-tile {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 10px 12px;
+      cursor: pointer;
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      transition: border-color 0.2s ease;
+      gap: 3px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      user-select: none;
     }
-    .folder-destination-card:hover {
-      border-color: rgba(56, 189, 248, 0.45);
+    .bento-cat-tile:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
     }
-    .folder-dest-header {
+    .bento-cat-tile.active {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--cat-accent, #38bdf8);
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.2), inset 0 0 16px rgba(56, 189, 248, 0.08);
+    }
+    .bento-tile-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
     }
-    .folder-dest-main {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    .bento-tile-icon {
+      font-size: 1.15rem;
     }
-    .folder-dest-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      background: rgba(56, 189, 248, 0.15);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.1rem;
-    }
-    .folder-dest-title-group {
-      display: flex;
-      flex-direction: column;
-    }
-    .folder-dest-subtitle {
-      font-size: 0.68rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
+    .bento-tile-pill {
+      font-size: 0.65rem;
       font-weight: 700;
       color: #94a3b8;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 2px 6px;
+      border-radius: 4px;
     }
-    .folder-dest-name {
-      font-size: 0.92rem;
+    .bento-cat-tile.active .bento-tile-pill {
+      color: var(--cat-accent, #38bdf8);
+      background: rgba(255, 255, 255, 0.12);
+    }
+    .bento-tile-name {
+      font-size: 0.84rem;
       font-weight: 700;
-      color: #38bdf8;
+      color: #fff;
+      margin-top: 2px;
     }
-    .folder-copy-btn {
-      height: 28px;
+    .bento-tile-desc {
+      font-size: 0.68rem;
+      color: #94a3b8;
+      line-height: 1.25;
+    }
+
+    /* Directory Breadcrumb Box */
+    .studio-copy-path-btn {
+      height: 26px;
       padding: 0 10px;
       border-radius: 6px;
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.14);
       color: #e2e8f0;
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       font-weight: 600;
       cursor: pointer;
       display: flex;
@@ -1745,29 +1901,140 @@
       gap: 5px;
       transition: all 0.15s ease;
     }
-    .folder-copy-btn:hover {
+    .studio-copy-path-btn:hover {
       background: #38bdf8;
       border-color: #38bdf8;
       color: #000;
     }
-    .folder-dest-path {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 0.73rem;
-      color: #cbd5e1;
+    .studio-breadcrumb-box {
       background: rgba(0, 0, 0, 0.35);
-      padding: 7px 10px;
-      border-radius: 6px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      word-break: break-all;
-      user-select: all;
+      border: 1px solid rgba(56, 189, 248, 0.22);
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
-    .folder-dest-note {
+    .breadcrumb-tree {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.74rem;
+      line-height: 1.5;
+    }
+    .tree-line {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tree-root { color: #94a3b8; }
+    .tree-folder { color: #38bdf8; font-weight: 700; }
+    .tree-file { color: #10b981; }
+    .tree-indent-1 { padding-left: 14px; }
+    .tree-indent-2 { padding-left: 28px; }
+    .breadcrumb-full-path {
+      font-family: ui-monospace, monospace;
       font-size: 0.7rem;
       color: #94a3b8;
-      line-height: 1.4;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 6px 10px;
+      border-radius: 6px;
+      word-break: break-all;
+    }
+
+    /* Contextual Description */
+    .studio-textarea {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 10px 14px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.84rem;
+      line-height: 1.45;
+      outline: none;
+      resize: vertical;
+      min-height: 60px;
+      transition: all 0.2s ease;
+    }
+    .studio-textarea:focus {
+      background: rgba(255, 255, 255, 0.07);
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+    }
+
+    /* Studio Modal Footer */
+    .studio-footer {
+      padding: 16px 28px;
       display: flex;
-      align-items: flex-start;
-      gap: 6px;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(0, 0, 0, 0.25);
+    }
+    .studio-footer-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.74rem;
+      color: #94a3b8;
+      max-width: 55%;
+    }
+    .studio-status-icon {
+      font-size: 1.1rem;
+    }
+    .studio-footer-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .studio-btn-submit {
+      background: linear-gradient(135deg, #0284c7 0%, #4f46e5 100%);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 11px 22px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 8px 24px rgba(2, 132, 199, 0.35);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .studio-btn-submit:hover {
+      background: linear-gradient(135deg, #0369a1 0%, #4338ca 100%);
+      box-shadow: 0 12px 30px rgba(2, 132, 199, 0.55);
+      transform: translateY(-1px);
+    }
+
+    /* Responsive Breakdown for Tablets & Mobile Phones */
+    @media (max-width: 860px) {
+      .upload-modal-box.studio-modal-box {
+        max-width: 100%;
+        border-radius: 18px;
+      }
+      .studio-body-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 18px;
+      }
+      .studio-footer {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+      }
+      .studio-footer-status {
+        max-width: 100%;
+      }
+      .studio-footer-actions {
+        justify-content: flex-end;
+      }
+    }
+    @media (max-width: 520px) {
+      .bento-category-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     /* Fallback Banner for Broken/Missing Images */
@@ -2353,116 +2620,245 @@
        UPLOAD MODAL (AI SMART CLASSIFIER & INDEXEDDB MULTI-DEVICE STORAGE)
        ========================================================================== -->
   <div class="modal-backdrop" id="uploadModal" onclick="closeUploadModalOnBackdrop(event)">
-    <div class="upload-modal-box">
-      <div class="modal-header">
+    <div class="upload-modal-box studio-modal-box">
+      <!-- Studio Header -->
+      <div class="modal-header studio-header">
         <div class="modal-title">
-          <div class="modal-title-icon">
+          <div class="modal-title-icon studio-icon-pulse">
             <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
           </div>
           <div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span>Upload Desain Baru</span>
-              <span class="ai-detect-badge"><span class="ai-pulse-dot"></span> AI Smart Auto-Detect</span>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span class="studio-main-title">Studio Upload & Asset Inspector</span>
+              <span class="ai-detect-badge"><span class="ai-pulse-dot"></span> AI Vision Auto-Detect</span>
             </div>
-            <div style="font-size:0.75rem; color:#94a3b8; font-weight:normal; margin-top:2px;">Otomatis klasifikasi nama, kategori, folder, dan deskripsi</div>
+            <div class="studio-subtitle">Impor aset visual, otomatis terklasifikasi ke design system dan folder proyek</div>
           </div>
         </div>
-        <button class="modal-close-btn" onclick="closeUploadModal()" title="Tutup">
+        <button class="modal-close-btn" onclick="closeUploadModal()" title="Tutup Modal">
           <svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
       </div>
 
-      <div class="modal-body">
-        <!-- Drag & Drop Zone -->
-        <div class="drop-zone" id="uploadDropZone" onclick="triggerFileInput()">
-          <input type="file" id="uploadFileInput" accept="image/*" style="display:none;" onchange="handleFilePicked(event)">
-          <div id="dropZoneContent" style="display:flex; flex-direction:column; align-items:center; gap:8px;">
-            <div class="drop-icon-wrap">
-              <svg class="icon icon-lg" viewBox="0 0 24 24" style="color:#38bdf8;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-            </div>
-            <div style="font-weight:700; font-size:0.95rem; color:#f8fafc;">Pilih gambar atau tarik & lepas ke sini</div>
-            <div style="font-size:0.76rem; color:#94a3b8;">Mendukung JPG, PNG, WEBP, GIF (Dapat ambil langsung dari kamera HP)</div>
-            <div class="spec-chip highlight" style="margin-top:4px;">✨ Sistem akan otomatis mengisi seluruh form di bawah</div>
-          </div>
-
-          <div id="dropPreviewContainer" class="drop-preview-container">
-            <img id="uploadPreviewImg" class="drop-preview-img" alt="Preview">
-            <div class="drop-preview-meta">
-              <span class="spec-chip highlight" id="uploadPreviewSpecs">📐 Menghitung...</span>
-              <button type="button" class="drop-change-btn" onclick="event.stopPropagation(); triggerFileInput();">🔄 Ganti Gambar</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- 1. Auto-detected Title -->
-        <div class="form-group">
-          <div class="form-label-row">
-            <label class="form-label" for="uploadTitle">Nama / Judul Desain</label>
-            <span class="form-label-tag" id="titleAutoTag">✨ Auto-Cleaned</span>
-          </div>
-          <input type="text" id="uploadTitle" class="form-input" placeholder="Contoh: Mobile Banking Dark Mode Flow">
-        </div>
-
-        <!-- 2. Auto-detected Category -->
-        <div class="form-group">
-          <div class="form-label-row">
-            <label class="form-label" for="uploadCategory">Kategori Galeri</label>
-            <span class="form-label-tag" id="catAutoTag">✨ Auto-Classified</span>
-          </div>
-          <select id="uploadCategory" class="form-select" onchange="onCategoryDropdownChange()">
-            <option value="mobile">📱 UI UX Mobile App (Portrait Smartphone)</option>
-            <option value="web">💻 UI UX Web Dashboard (Landscape Desktop)</option>
-            <option value="wire">📐 Wireframes and Components (Bento & Modular)</option>
-            <option value="poster">🎨 Poster and Typography (Visual Editorial)</option>
-            <option value="anime">🎮 Anime and Game Art (Character & Concept)</option>
-            <option value="wall">🌄 Wallpapers and Photography (Scenery & Photo)</option>
-          </select>
-        </div>
-
-        <!-- 3. Folder Destination Card -->
-        <div class="folder-destination-card" id="folderDestinationCard">
-          <div class="folder-dest-header">
-            <div class="folder-dest-main">
-              <div class="folder-dest-icon">📁</div>
-              <div class="folder-dest-title-group">
-                <span class="folder-dest-subtitle">Penempatan Folder Proyek</span>
-                <span class="folder-dest-name" id="folderDestName">UI UX Mobile App</span>
+      <!-- Studio 2-Column Bento Body -->
+      <div class="studio-body-grid">
+        
+        <!-- ================= LEFT COLUMN: Visual Showcase & Live Preview ================= -->
+        <div class="studio-visual-pane">
+          
+          <!-- Drop Zone / Live Card Preview Canvas -->
+          <div class="studio-canvas-card" id="uploadDropZone" onclick="triggerFileInput()">
+            <input type="file" id="uploadFileInput" accept="image/*" style="display:none;" onchange="handleFilePicked(event)">
+            
+            <!-- Empty state when no image selected -->
+            <div id="dropZoneContent" class="studio-drop-empty">
+              <div class="studio-drop-glow-ring">
+                <svg class="icon icon-xl" viewBox="0 0 24 24" style="stroke: #38bdf8; width: 36px; height: 36px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              </div>
+              <div class="studio-drop-h1">Tarik & Letakkan Gambar di Sini</div>
+              <div class="studio-drop-sub">atau klik untuk telusuri file dari perangkat / kamera HP</div>
+              <div class="studio-drop-pills">
+                <span class="spec-chip">JPG</span>
+                <span class="spec-chip">PNG</span>
+                <span class="spec-chip">WEBP</span>
+                <span class="spec-chip">GIF</span>
               </div>
             </div>
-            <button type="button" class="folder-copy-btn" onclick="copyFolderDestinationPath()" title="Salin Path Folder Lokal">
-              <svg class="icon icon-xs" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-              <span>Salin Path</span>
-            </button>
+
+            <!-- Active State: Real Gallery Card Mockup -->
+            <div id="dropPreviewContainer" class="studio-live-mockup-wrap" style="display:none;">
+              <div class="studio-live-card">
+                <div class="card-media-wrap studio-mockup-media">
+                  <div class="card-floating-header">
+                    <span class="card-category-badge badge-mobile" id="mockupCatBadge">UI UX Mobile App</span>
+                    <span class="card-ext-badge" id="mockupExtBadge">PNG</span>
+                  </div>
+                  <img id="uploadPreviewImg" class="studio-mockup-img" alt="Live Mockup Preview">
+                </div>
+                <div class="studio-mockup-footer">
+                  <div class="studio-mockup-title" id="mockupTitle">Nama Desain</div>
+                  <div class="studio-mockup-sub" id="mockupSub">UI UX Mobile App</div>
+                </div>
+              </div>
+              <button type="button" class="studio-reupload-btn" onclick="event.stopPropagation(); triggerFileInput();">
+                <svg class="icon icon-xs" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <span>Ganti Gambar</span>
+              </button>
+            </div>
           </div>
-          <div class="folder-dest-path" id="folderDestPath">C:\Users\Asep\OneDrive\Gambar\App Craft\UI UX Mobile App\</div>
-          <div class="folder-dest-note">
-            <span>💡</span>
-            <span>Foto otomatis disimpan ke IndexedDB browser perangkat ini agar langsung tampil di galeri. Untuk sinkronisasi jangka panjang, simpan file fisik ke folder di atas.</span>
+
+          <!-- Visual Specification Chips Strip -->
+          <div class="studio-specs-bento" id="studioSpecsBento">
+            <div class="spec-metric-card">
+              <span class="metric-label">DIMENSI</span>
+              <span class="metric-value" id="specResolution">-- × -- px</span>
+            </div>
+            <div class="spec-metric-card">
+              <span class="metric-label">RASIO</span>
+              <span class="metric-value" id="specRatio">--</span>
+            </div>
+            <div class="spec-metric-card">
+              <span class="metric-label">UKURAN</span>
+              <span class="metric-value" id="specFileSize">-- KB</span>
+            </div>
           </div>
+
+          <!-- Dynamic 5-Color Extracted Palette Strip -->
+          <div class="studio-palette-box">
+            <div class="palette-box-header">
+              <span class="palette-box-title">PALET WARNA TERDETEKSI (KLIK HEX UNTUK COPY)</span>
+            </div>
+            <div class="studio-palette-strip" id="studioPaletteSwatches">
+              <div class="palette-swatch-empty" style="background:#1e293b;"></div>
+              <div class="palette-swatch-empty" style="background:#334155;"></div>
+              <div class="palette-swatch-empty" style="background:#475569;"></div>
+              <div class="palette-swatch-empty" style="background:#64748b;"></div>
+              <div class="palette-swatch-empty" style="background:#94a3b8;"></div>
+            </div>
+          </div>
+
         </div>
 
-        <!-- 4. Auto-detected Description -->
-        <div class="form-group">
-          <div class="form-label-row">
-            <label class="form-label" for="uploadDesc">Deskripsi Singkat</label>
-            <span class="form-label-tag">✨ Auto-Drafted</span>
+        <!-- ================= RIGHT COLUMN: Bento Studio Properties ================= -->
+        <div class="studio-form-pane">
+          
+          <!-- 1. Design Title Input & Slug -->
+          <div class="studio-section">
+            <div class="form-label-row">
+              <label class="studio-label" for="uploadTitle">1. JUDUL / NAMA DESAIN</label>
+              <span class="form-label-tag" id="titleAutoTag">✨ AI Auto-Cleaned</span>
+            </div>
+            <div class="studio-input-wrap">
+              <input type="text" id="uploadTitle" class="studio-input" placeholder="Contoh: Mobile Banking Dark Mode Flow" oninput="onTitleInputChange(this.value)">
+            </div>
+            <div class="studio-slug-preview">
+              <span style="color:#64748b;">Slug Target:</span>
+              <span id="studioSlugPreview" style="color:#38bdf8; font-family:monospace;">App New Design.png</span>
+            </div>
           </div>
-          <textarea id="uploadDesc" class="form-textarea" rows="2" placeholder="Catatan alur, fitur, warna, atau referensi desain..."></textarea>
+
+          <!-- 2. Interactive Bento Category Selector (Eliminating the boring select dropdown!) -->
+          <div class="studio-section">
+            <div class="form-label-row">
+              <label class="studio-label">2. KATEGORI DESAIN (KLIK PILIHAN BENTO)</label>
+              <span class="form-label-tag" id="catAutoTag">✨ AI Auto-Classified</span>
+            </div>
+            
+            <!-- Hidden input to store chosen category -->
+            <input type="hidden" id="uploadCategory" value="mobile">
+
+            <!-- 6 Bento Interactive Tiles (2 Columns x 3 Rows) -->
+            <div class="bento-category-grid" id="bentoCategoryGrid">
+              
+              <!-- 1. Mobile -->
+              <div class="bento-cat-tile active" data-cat="mobile" onclick="selectBentoCategory('mobile')" style="--cat-accent:#38bdf8;">
+                <div class="bento-tile-top">
+                  <span class="bento-tile-icon">📱</span>
+                  <span class="bento-tile-pill">Portrait Flow</span>
+                </div>
+                <div class="bento-tile-name">UI UX Mobile</div>
+                <div class="bento-tile-desc">Smartphone screens & onboarding flow</div>
+              </div>
+
+              <!-- 2. Web Dashboard -->
+              <div class="bento-cat-tile" data-cat="web" onclick="selectBentoCategory('web')" style="--cat-accent:#6366f1;">
+                <div class="bento-tile-top">
+                  <span class="bento-tile-icon">💻</span>
+                  <span class="bento-tile-pill">Landscape SaaS</span>
+                </div>
+                <div class="bento-tile-name">Web Dashboard</div>
+                <div class="bento-tile-desc">Desktop admin, CRM, portal & landings</div>
+              </div>
+
+              <!-- 3. Wireframes & Components -->
+              <div class="bento-cat-tile" data-cat="wire" onclick="selectBentoCategory('wire')" style="--cat-accent:#10b981;">
+                <div class="bento-tile-top">
+                  <span class="bento-tile-icon">📐</span>
+                  <span class="bento-tile-pill">Bento & Kits</span>
+                </div>
+                <div class="bento-tile-name">Wireframe & Kit</div>
+                <div class="bento-tile-desc">Card styles, UI kits & design systems</div>
+              </div>
+
+              <!-- 4. Poster & Typography -->
+              <div class="bento-cat-tile" data-cat="poster" onclick="selectBentoCategory('poster')" style="--cat-accent:#f43f5e;">
+                <div class="bento-tile-top">
+                  <span class="bento-tile-icon">🎨</span>
+                  <span class="bento-tile-pill">Editorial Typo</span>
+                </div>
+                <div class="bento-tile-name">Poster & Typo</div>
+                <div class="bento-tile-desc">Swiss posters, typography & flyers</div>
+              </div>
+
+              <!-- 5. Anime & Game Art -->
+              <div class="bento-cat-tile" data-cat="anime" onclick="selectBentoCategory('anime')" style="--cat-accent:#f59e0b;">
+                <div class="bento-tile-top">
+                  <span class="bento-tile-icon">🎮</span>
+                  <span class="bento-tile-pill">Character Art</span>
+                </div>
+                <div class="bento-tile-name">Anime & Game</div>
+                <div class="bento-tile-desc">Game splash, 3D concept & waifu art</div>
+              </div>
+
+              <!-- 6. Wallpapers & Photography -->
+              <div class="bento-cat-tile" data-cat="wall" onclick="selectBentoCategory('wall')" style="--cat-accent:#a855f7;">
+                <div class="bento-tile-top">
+                  <span class="bento-tile-icon">🌄</span>
+                  <span class="bento-tile-pill">Scenery 4K</span>
+                </div>
+                <div class="bento-tile-name">Wallpaper Photo</div>
+                <div class="bento-tile-desc">Scenery, nature landscape & photography</div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- 3. Project Directory Breadcrumb & Tree Explorer -->
+          <div class="studio-section">
+            <div class="form-label-row">
+              <label class="studio-label">3. PENEMPATAN DIREKTORI FOLDER</label>
+              <button type="button" class="studio-copy-path-btn" onclick="copyFolderDestinationPath()" title="Salin Path Folder">
+                <svg class="icon icon-xs" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                <span>Salin Path Folder</span>
+              </button>
+            </div>
+            
+            <div class="studio-breadcrumb-box">
+              <div class="breadcrumb-tree">
+                <div class="tree-line"><span class="tree-icon">📂</span> <span class="tree-root">App Craft (Root)</span></div>
+                <div class="tree-line tree-indent-1">├── <span class="tree-folder" id="folderDestName">UI UX Mobile App</span></div>
+                <div class="tree-line tree-indent-2">└── <span class="tree-file" id="treeTargetFile">Aset Desain Baru.png</span></div>
+              </div>
+              <div class="breadcrumb-full-path" id="folderDestPath">C:\Users\Asep\OneDrive\Gambar\App Craft\UI UX Mobile App\</div>
+            </div>
+          </div>
+
+          <!-- 4. Indonesian Contextual Description -->
+          <div class="studio-section">
+            <div class="form-label-row">
+              <label class="studio-label" for="uploadDesc">4. DESKRIPSI & KONTEKS DESAIN</label>
+              <span class="form-label-tag">✨ AI Auto-Drafted</span>
+            </div>
+            <textarea id="uploadDesc" class="studio-textarea" rows="2" placeholder="Catatan alur, fitur, warna, atau referensi desain..."></textarea>
+          </div>
+
         </div>
 
-        <!-- IndexedDB Multi-Device Note -->
-        <div style="font-size:0.75rem; color:#94a3b8; background:rgba(16, 185, 129, 0.08); border:1px solid rgba(16, 185, 129, 0.25); padding:10px 14px; border-radius:10px; display:flex; align-items:center; gap:10px;">
-          <span style="font-size:1rem;">💾</span>
-          <span>Tersimpan instan di IndexedDB browser perangkat ini. Langsung tampil di galeri dan dapat dibuka di Lightbox kapan pun.</span>
-        </div>
       </div>
 
-      <div class="modal-footer">
-        <button type="button" class="btn-secondary" onclick="closeUploadModal()">Batal</button>
-        <button type="button" class="btn-primary" onclick="submitCustomUpload()">
-          <svg class="icon icon-xs" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          <span>Simpan ke Galeri</span>
-        </button>
+      <!-- Studio Modal Footer -->
+      <div class="modal-footer studio-footer">
+        <div class="studio-footer-status">
+          <span class="studio-status-icon">💾</span>
+          <span>Tersimpan instan di <b>IndexedDB Multi-Device</b> (Tampil offline di HP & PC tanpa perlu upload ulang).</span>
+        </div>
+        <div class="studio-footer-actions">
+          <button type="button" class="btn-secondary" onclick="closeUploadModal()">Batal</button>
+          <button type="button" class="studio-btn-submit" onclick="submitCustomUpload()">
+            <svg class="icon icon-xs" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>Simpan & Terbitkan ke Galeri</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -4792,12 +5188,53 @@
       "Component UI Card TodoList.jpg": "Component Fitness Health Tracker Widgets.jpg"
     };
 
-    function handleImgError(img, itemName, cat) {
-      if (filenameAliases[itemName] && !img.dataset.triedAlias) {
-        img.dataset.triedAlias = "1";
-        const catInfo = categoriesMeta[cat];
-        if (catInfo) {
-          img.src = `${encodeURIComponent(catInfo.folder)}/${encodeURIComponent(filenameAliases[itemName])}`;
+    // Unified Robust Image Error Handler with Automatic Aliases & Extensions
+    function handleImgError(imgElement, fileName, cat) {
+      if (!imgElement) return;
+
+      // 1. Try filename alias first (for backward compatibility with original filenames on GitHub Pages)
+      const triedAlias = imgElement.getAttribute('data-tried-alias');
+      if (!triedAlias && typeof filenameAliases !== 'undefined' && filenameAliases[fileName]) {
+        imgElement.setAttribute('data-tried-alias', 'true');
+        const catInfo = categoriesMeta[cat] || { folder: 'UI UX Mobile App' };
+        const aliasFile = filenameAliases[fileName];
+        imgElement.src = `${encodeURIComponent(catInfo.folder)}/${encodeURIComponent(aliasFile)}`;
+        return;
+      }
+
+      // 2. Try alternative extension if applicable (.jpg <-> .png)
+      const currentSrc = imgElement.src || '';
+      const triedPng = imgElement.getAttribute('data-tried-png');
+      const triedJpg = imgElement.getAttribute('data-tried-jpg');
+
+      if (!triedPng && currentSrc.toLowerCase().endsWith('.jpg')) {
+        imgElement.setAttribute('data-tried-png', 'true');
+        imgElement.src = currentSrc.slice(0, -4) + '.png';
+        return;
+      }
+      if (!triedJpg && currentSrc.toLowerCase().endsWith('.png')) {
+        imgElement.setAttribute('data-tried-jpg', 'true');
+        imgElement.src = currentSrc.slice(0, -4) + '.jpg';
+        return;
+      }
+
+      imgElement.onerror = null; // stop any infinite error loops
+
+      // 3. If completely failed (404 from GitHub Pages or file missing):
+      const parent = imgElement.closest('.card-media-wrap') || imgElement.parentElement;
+      if (parent) {
+        imgElement.style.display = 'none';
+        if (!parent.querySelector('.image-fallback-banner')) {
+          const catInfo = categoriesMeta[cat] || { label: 'Aset Desain', folder: 'Media' };
+          const banner = document.createElement('div');
+          banner.className = 'image-fallback-banner';
+          banner.innerHTML = `
+            <div class="fallback-icon">🖼️</div>
+            <div class="fallback-title">${escapeHtml(fileName)}</div>
+            <div class="fallback-desc">File foto belum di-push ke GitHub Pages atau sedang diakses offline</div>
+            <span class="fallback-badge">${catInfo.label}</span>
+          `;
+          parent.appendChild(banner);
         }
       }
     }
@@ -4862,7 +5299,7 @@
     }
 
     // ==========================================================================
-    // UPLOAD MODAL WITH AI SMART AUTO-DETECTION & INDEXEDDB STORAGE
+    // BENTO STUDIO UPLOAD WITH AI AUTO-CLASSIFIER & PALETTE ENGINE
     // ==========================================================================
     let currentUploadDataUrl = '';
     let currentUploadFileName = '';
@@ -4899,6 +5336,121 @@
       if (file) handleFileSelected(file);
     }
 
+    // Realtime Palette Extractor from Uploaded Image (5 Distinct Swatches)
+    function extractStudioPalette(img) {
+      const container = document.getElementById('studioPaletteSwatches');
+      if (!container) return;
+      container.innerHTML = '';
+      let hexColors = [];
+
+      try {
+        const c = document.createElement('canvas');
+        c.width = 48;
+        c.height = 48;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(img, 0, 0, 48, 48);
+        const data = ctx.getImageData(0, 0, 48, 48).data;
+        const samplePoints = [
+          [10, 10], [38, 10], [24, 24], [10, 38], [38, 38]
+        ];
+        samplePoints.forEach(([x, y]) => {
+          const idx = (y * 48 + x) * 4;
+          const hex = '#' + [data[idx], data[idx+1], data[idx+2]].map(v => v.toString(16).padStart(2, '0')).join('');
+          if (!hexColors.includes(hex)) hexColors.push(hex);
+        });
+      } catch (e) {
+        hexColors = ['#0284c7', '#38bdf8', '#6366f1', '#10b981', '#f8fafc'];
+      }
+
+      while (hexColors.length < 5) {
+        hexColors.push('#38bdf8');
+      }
+
+      hexColors.slice(0, 5).forEach(hex => {
+        const swatch = document.createElement('div');
+        swatch.className = 'palette-swatch';
+        swatch.style.backgroundColor = hex;
+        swatch.title = `${hex.toUpperCase()} (Klik untuk salin)`;
+        swatch.onclick = (e) => {
+          e.stopPropagation();
+          copyPath(hex.toUpperCase());
+          showToast(`✓ Kode warna ${hex.toUpperCase()} disalin!`);
+        };
+        container.appendChild(swatch);
+      });
+    }
+
+    // Dynamic Contextual Indonesian Description Generator
+    function generateContextualDescription(cat, title, w = 1080, h = 1920) {
+      const ratio = w / h;
+      const ratioStr = ratio < 1 ? `1:${(1/ratio).toFixed(1)} Portrait` : `${ratio.toFixed(1)}:1 Landscape`;
+      if (cat === 'mobile') {
+        return `Desain antarmuka aplikasi seluler bertema ${title}. Format portrait (${ratioStr}), cocok untuk eksplorasi flow antarmuka dan interaksi smartphone.`;
+      } else if (cat === 'web') {
+        return `Eksplorasi antarmuka web dashboard bertema ${title}. Format layar lebar (${ratioStr}), menampilkan komposisi modular dan visual desktop yang komprehensif.`;
+      } else if (cat === 'wire') {
+        return `Rancangan struktur komponen dan wireframe bertema ${title}. Terstruktur sebagai referensi layout bento dan panduan design system.`;
+      } else if (cat === 'poster') {
+        return `Karya grafis dan tipografi artistik bertema ${title}. Menonjolkan estetika hierarki teks editorial dan tata letak visual modern.`;
+      } else if (cat === 'anime') {
+        return `Artwork ilustrasi dan desain karakter bertema ${title}. Visual dinamis untuk inspirasi game concept art dan aset kreatif.`;
+      } else {
+        return `Koleksi wallpaper dan fotografi bertema ${title}. Referensi atmosfer pencahayaan dan estetika visual resolusi tinggi.`;
+      }
+    }
+
+    // Interactive Bento Category Selector
+    function selectBentoCategory(cat) {
+      const hiddenInput = document.getElementById('uploadCategory');
+      if (hiddenInput) hiddenInput.value = cat;
+
+      // Update active tile visual state
+      document.querySelectorAll('#bentoCategoryGrid .bento-cat-tile').forEach(tile => {
+        tile.classList.toggle('active', tile.getAttribute('data-cat') === cat);
+      });
+
+      const catMeta = categoriesMeta[cat] || categoriesMeta.mobile;
+      
+      // Update Live Card Mockup
+      const mockupCatBadge = document.getElementById('mockupCatBadge');
+      const mockupSub = document.getElementById('mockupSub');
+      if (mockupCatBadge) {
+        mockupCatBadge.textContent = catMeta.label;
+        mockupCatBadge.className = `card-category-badge ${catMeta.badgeClass}`;
+      }
+      if (mockupSub) mockupSub.textContent = catMeta.label;
+
+      // Update Directory Breadcrumb Tree
+      const folderDestName = document.getElementById('folderDestName');
+      const folderDestPath = document.getElementById('folderDestPath');
+      if (folderDestName) folderDestName.textContent = catMeta.folder;
+      if (folderDestPath) folderDestPath.textContent = `C:\\Users\\Asep\\OneDrive\\Gambar\\App Craft\\${catMeta.folder}\\`;
+
+      // Update contextual description
+      const titleInput = document.getElementById('uploadTitle');
+      const descInput = document.getElementById('uploadDesc');
+      const currentTitle = (titleInput?.value.trim()) || 'Desain Baru';
+      if (descInput) {
+        descInput.value = generateContextualDescription(cat, currentTitle);
+      }
+    }
+
+    // Keystroke listener for Title Input
+    function onTitleInputChange(val) {
+      const cleanVal = val.trim();
+      const mockupTitle = document.getElementById('mockupTitle');
+      const slugPreview = document.getElementById('studioSlugPreview');
+      const treeTargetFile = document.getElementById('treeTargetFile');
+      
+      const ext = currentUploadFileName ? currentUploadFileName.split('.').pop().toLowerCase() : 'png';
+      const safeName = cleanVal ? cleanVal.replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, ' ') : 'App New Design';
+      const targetSlug = `${safeName}.${ext}`;
+
+      if (mockupTitle) mockupTitle.textContent = cleanVal || 'Nama Desain';
+      if (slugPreview) slugPreview.textContent = targetSlug;
+      if (treeTargetFile) treeTargetFile.textContent = targetSlug;
+    }
+
     function handleFileSelected(file) {
       if (!file || !file.type.startsWith('image/')) {
         showToast('⚠️ Silakan pilih file gambar yang valid (JPG, PNG, WEBP, GIF)');
@@ -4915,18 +5467,34 @@
         img.onload = () => {
           const w = img.naturalWidth || 1080;
           const h = img.naturalHeight || 1920;
-          
-          // Display Preview
+          const ratio = w / h;
+          const ratioStr = ratio < 1 ? `1:${(1/ratio).toFixed(1)} (Portrait)` : `${ratio.toFixed(1)}:1 (Landscape)`;
+          const ext = file.name.split('.').pop().toUpperCase();
+          const fileSizeKb = (file.size / 1024).toFixed(0);
+
+          // Update Live Card Mockup & Canvas State
           const preview = document.getElementById('uploadPreviewImg');
           const previewContainer = document.getElementById('dropPreviewContainer');
           const dropContent = document.getElementById('dropZoneContent');
+          const mockupExtBadge = document.getElementById('mockupExtBadge');
+          const specResolution = document.getElementById('specResolution');
+          const specRatio = document.getElementById('specRatio');
+          const specFileSize = document.getElementById('specFileSize');
+
           if (preview && previewContainer && dropContent) {
             preview.src = currentUploadDataUrl;
             previewContainer.style.display = 'flex';
             dropContent.style.display = 'none';
           }
+          if (mockupExtBadge) mockupExtBadge.textContent = ext;
+          if (specResolution) specResolution.textContent = `${w} × ${h} px`;
+          if (specRatio) specRatio.textContent = ratioStr;
+          if (specFileSize) specFileSize.textContent = `${fileSizeKb} KB`;
 
-          // Run AI Auto-Detection
+          // Extract dynamic 5-color palette strip
+          extractStudioPalette(img);
+
+          // Run AI Auto-Detection for Title, Category, and Description
           analyzeUploadedImage(file, w, h);
         };
         img.src = currentUploadDataUrl;
@@ -4936,7 +5504,7 @@
 
     // AI Smart Auto-Classifier: Title, Category, Folder, and Contextual Indonesian Description
     function analyzeUploadedImage(file, w, h) {
-      const ratio = w / h; // ratio < 1 is portrait (e.g. 0.46 = 9:19.5 smartphone), ratio > 1 is landscape
+      const ratio = w / h;
       const rawName = file.name;
       const lowerName = rawName.toLowerCase();
 
@@ -4971,82 +5539,40 @@
 
       // 2. AUTO-DETECT TITLE (NAMA / JUDUL)
       let baseName = rawName.replace(/\.[^/.]+$/, ''); // remove ext
-      // Strip common prefixes
       baseName = baseName.replace(/^(IMG|Screenshot|PXL|Capture|Photo|WP|Download|Pic|Image)[_-]?/i, '');
-      // Strip dates & timestamp patterns (e.g. 20240924_123456 or 2024-09-24)
-      baseName = baseName.replace(/\b\d{4}[-_]?\d{2}[-_]?\d{2}[-_]?\d*\b/g, '');
+      baseName = baseName.replace(/\b\d{4}[-_]?\d{2}[-_]?\d*\b/g, '');
       baseName = baseName.replace(/[_-]+/g, ' ');
-      // Separate camelCase
       baseName = baseName.replace(/([a-z])([A-Z])/g, '$1 $2');
       baseName = baseName.trim();
 
       let cleanTitle = '';
       if (!baseName || /^\d+$/.test(baseName)) {
-        // Pure random numbers (e.g. 1000035368)
         const catMeta = categoriesMeta[detectedCat] || categoriesMeta.mobile;
         const suffix = baseName ? '#' + baseName.slice(-4) : '#' + Math.floor(1000 + Math.random() * 9000);
         cleanTitle = `${catMeta.label.split(' ')[0]} Interface ${suffix}`;
       } else {
-        // Convert to Title Case
         cleanTitle = baseName.split(' ')
           .filter(Boolean)
           .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
           .join(' ');
       }
 
-      // 3. AUTO-DETECT FOLDER
-      const catMeta = categoriesMeta[detectedCat] || categoriesMeta.mobile;
-      const folderName = catMeta.folder;
-
-      // 4. AUTO-DETECT CONTEXTUAL INDONESIAN DESCRIPTION
-      const ratioStr = ratio < 1 ? `1:${(1/ratio).toFixed(1)} Portrait` : `${ratio.toFixed(1)}:1 Landscape`;
-      let descText = '';
-      if (detectedCat === 'mobile') {
-        descText = `Desain antarmuka aplikasi seluler bertema ${cleanTitle}. Format portrait resolusi ${w}×${h} px (${ratioStr}), cocok untuk eksplorasi flow antarmuka dan interaksi smartphone.`;
-      } else if (detectedCat === 'web') {
-        descText = `Eksplorasi antarmuka web dashboard bertema ${cleanTitle}. Format layar lebar resolusi ${w}×${h} px (${ratioStr}), menampilkan komposisi modular dan visual desktop yang komprehensif.`;
-      } else if (detectedCat === 'wire') {
-        descText = `Rancangan struktur komponen dan wireframe bertema ${cleanTitle}. Resolusi ${w}×${h} px, terstruktur sebagai referensi layout dan desain sistem.`;
-      } else if (detectedCat === 'poster') {
-        descText = `Karya grafis dan tipografi artistik bertema ${cleanTitle}. Resolusi ${w}×${h} px (${ratioStr}), menonjolkan estetika hierarki teks dan tata letak visual modern.`;
-      } else if (detectedCat === 'anime') {
-        descText = `Artwork ilustrasi dan desain karakter bertema ${cleanTitle}. Resolusi ${w}×${h} px dengan visual dinamis untuk inspirasi game art dan asset concept.`;
-      } else {
-        descText = `Koleksi wallpaper dan fotografi beresolusi ${w}×${h} px (${ratioStr}) bertema ${cleanTitle}. Referensi atmosfer pencahayaan dan estetika visual.`;
-      }
-
-      // 5. UPDATE UI FORM FIELDS
+      // 3. UPDATE FORM & BENTO TILES
       const titleInput = document.getElementById('uploadTitle');
-      const catSelect = document.getElementById('uploadCategory');
       const descInput = document.getElementById('uploadDesc');
-      const folderDestName = document.getElementById('folderDestName');
-      const folderDestPath = document.getElementById('folderDestPath');
-      const previewSpecs = document.getElementById('uploadPreviewSpecs');
 
       if (titleInput) titleInput.value = cleanTitle;
-      if (catSelect) catSelect.value = detectedCat;
-      if (descInput) descInput.value = descText;
-      if (folderDestName) folderDestName.textContent = folderName;
-      if (folderDestPath) folderDestPath.textContent = `C:\\Users\\Asep\\OneDrive\\Gambar\\App Craft\\${folderName}\\`;
-      if (previewSpecs) {
-        previewSpecs.textContent = `📐 ${w} × ${h} px • ${ratioStr}`;
+      onTitleInputChange(cleanTitle);
+
+      // Select Bento Category (also updates badges, mockup, folder, and description)
+      selectBentoCategory(detectedCat);
+
+      if (descInput) {
+        descInput.value = generateContextualDescription(detectedCat, cleanTitle, w, h);
       }
 
-      showToast(`✨ AI otomatis mendeteksi kategori: ${catMeta.label}`);
-    }
-
-    // Realtime folder destination sync when category is changed manually
-    function onCategoryDropdownChange() {
-      const catSelect = document.getElementById('uploadCategory');
-      if (!catSelect) return;
-      const cat = catSelect.value;
-      const catMeta = categoriesMeta[cat] || categoriesMeta.mobile;
-      const folderName = catMeta.folder;
-      const folderDestName = document.getElementById('folderDestName');
-      const folderDestPath = document.getElementById('folderDestPath');
-      if (folderDestName) folderDestName.textContent = folderName;
-      if (folderDestPath) folderDestPath.textContent = `C:\\Users\\Asep\\OneDrive\\Gambar\\App Craft\\${folderName}\\`;
-      showToast(`📁 Folder tujuan dialihkan ke: ${folderName}`);
+      const catMeta = categoriesMeta[detectedCat] || categoriesMeta.mobile;
+      showToast(`✨ AI mendeteksi kategori: ${catMeta.label}`);
     }
 
     function copyFolderDestinationPath() {
@@ -5099,9 +5625,13 @@
       const fileInput = document.getElementById('uploadFileInput');
       const titleInput = document.getElementById('uploadTitle');
       const descInput = document.getElementById('uploadDesc');
-      const catSelect = document.getElementById('uploadCategory');
-      const folderDestName = document.getElementById('folderDestName');
-      const folderDestPath = document.getElementById('folderDestPath');
+      const specResolution = document.getElementById('specResolution');
+      const specRatio = document.getElementById('specRatio');
+      const specFileSize = document.getElementById('specFileSize');
+      const mockupTitle = document.getElementById('mockupTitle');
+      const slugPreview = document.getElementById('studioSlugPreview');
+      const treeTargetFile = document.getElementById('treeTargetFile');
+      const paletteContainer = document.getElementById('studioPaletteSwatches');
 
       if (preview) { preview.src = ''; }
       if (previewContainer) previewContainer.style.display = 'none';
@@ -5109,9 +5639,22 @@
       if (fileInput) fileInput.value = '';
       if (titleInput) titleInput.value = '';
       if (descInput) descInput.value = '';
-      if (catSelect) catSelect.value = 'mobile';
-      if (folderDestName) folderDestName.textContent = 'UI UX Mobile App';
-      if (folderDestPath) folderDestPath.textContent = 'C:\\Users\\Asep\\OneDrive\\Gambar\\App Craft\\UI UX Mobile App\\';
+      if (specResolution) specResolution.textContent = '-- × -- px';
+      if (specRatio) specRatio.textContent = '--';
+      if (specFileSize) specFileSize.textContent = '-- KB';
+      if (mockupTitle) mockupTitle.textContent = 'Nama Desain';
+      if (slugPreview) slugPreview.textContent = 'App New Design.png';
+      if (treeTargetFile) treeTargetFile.textContent = 'Aset Desain Baru.png';
+      if (paletteContainer) {
+        paletteContainer.innerHTML = `
+          <div class="palette-swatch-empty" style="background:#1e293b;"></div>
+          <div class="palette-swatch-empty" style="background:#334155;"></div>
+          <div class="palette-swatch-empty" style="background:#475569;"></div>
+          <div class="palette-swatch-empty" style="background:#64748b;"></div>
+          <div class="palette-swatch-empty" style="background:#94a3b8;"></div>
+        `;
+      }
+      selectBentoCategory('mobile');
     }
 
     async function submitCustomUpload() {
@@ -5121,11 +5664,11 @@
       }
 
       const titleInput = document.getElementById('uploadTitle');
-      const categorySelect = document.getElementById('uploadCategory');
+      const categoryInput = document.getElementById('uploadCategory');
       const descInput = document.getElementById('uploadDesc');
 
       const title = (titleInput?.value.trim()) || 'Desain Kustom ' + new Date().toLocaleDateString('id-ID');
-      const cat = categorySelect?.value || 'mobile';
+      const cat = categoryInput?.value || 'mobile';
       const desc = (descInput?.value.trim()) || 'Desain yang diunggah dan disimpan ke penyimpanan lokal browser.';
       const ext = currentUploadFileName ? currentUploadFileName.split('.').pop().toUpperCase() : 'PNG';
 
@@ -5147,50 +5690,10 @@
         closeUploadModal();
         render();
         updateBadgeCounts();
-        showToast(`✓ Desain "${title}" berhasil disimpan ke penyimpanan lokal!`);
+        showToast(`✓ Desain "${title}" berhasil disimpan ke galeri!`);
       } catch (err) {
         console.error('Gagal menyimpan ke IndexedDB:', err);
         showToast('⚠️ Gagal menyimpan ke database lokal browser');
-      }
-    }
-
-    // Robust Error Handling for Missing / Offline Assets (e.g. if GitHub Pages doesn't have the photos yet)
-    function handleImgError(imgElement, fileName, cat) {
-      if (!imgElement) return;
-      imgElement.onerror = null; // stop any infinite error loops
-
-      // 1. Try alternative extension if applicable (.jpg <-> .png)
-      const currentSrc = imgElement.src || '';
-      const triedPng = imgElement.getAttribute('data-tried-png');
-      const triedJpg = imgElement.getAttribute('data-tried-jpg');
-
-      if (!triedPng && currentSrc.toLowerCase().endsWith('.jpg')) {
-        imgElement.setAttribute('data-tried-png', 'true');
-        imgElement.src = currentSrc.slice(0, -4) + '.png';
-        return;
-      }
-      if (!triedJpg && currentSrc.toLowerCase().endsWith('.png')) {
-        imgElement.setAttribute('data-tried-jpg', 'true');
-        imgElement.src = currentSrc.slice(0, -4) + '.jpg';
-        return;
-      }
-
-      // 2. If completely failed (404 from GitHub Pages or file missing):
-      const parent = imgElement.closest('.card-media-wrap') || imgElement.parentElement;
-      if (parent) {
-        imgElement.style.display = 'none';
-        if (!parent.querySelector('.image-fallback-banner')) {
-          const catInfo = categoriesMeta[cat] || { label: 'Aset Desain', folder: 'Media' };
-          const banner = document.createElement('div');
-          banner.className = 'image-fallback-banner';
-          banner.innerHTML = `
-            <div class="fallback-icon">🖼️</div>
-            <div class="fallback-title">${escapeHtml(fileName)}</div>
-            <div class="fallback-desc">File foto belum di-push ke GitHub Pages atau sedang diakses offline</div>
-            <span class="fallback-badge">${catInfo.label}</span>
-          `;
-          parent.appendChild(banner);
-        }
       }
     }
 
